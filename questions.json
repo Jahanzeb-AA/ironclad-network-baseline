@@ -1,0 +1,310 @@
+{
+  "version": "v1.0",
+  "product": "smb-network-baseline-assessment",
+  "principles": {
+    "not_sure_treated_as_fail": true,
+    "no_identity_required_for_assessment": true,
+    "email_optional_after_report": true,
+    "scope_upper_device_limit": 1000
+  },
+  "sections": [
+    {
+      "id": "A_SCOPE",
+      "title": "Scope & Reality",
+      "scored": false,
+      "questions": [
+        {
+          "id": "A1_DEVICE_COUNT",
+          "type": "single_choice",
+          "prompt": "Approximately how many total devices are on your network? (Include laptops, desktops, phones, printers, cameras, IoT, etc.)",
+          "scored": false,
+          "options": [
+            { "key": "LT_50", "label": "Less than 50" },
+            { "key": "R_50_200", "label": "50–200" },
+            { "key": "R_200_500", "label": "200–500" },
+            { "key": "R_500_1000", "label": "500–1000 (Upper limit for this assessment)" }
+          ]
+        },
+        {
+          "id": "A2_VENDOR_PROFILE",
+          "type": "single_choice",
+          "prompt": "Is your network built using a single vendor or mixed vendors?",
+          "scored": false,
+          "options": [
+            { "key": "SINGLE", "label": "Single vendor" },
+            { "key": "MIXED", "label": "Mixed vendors" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "A3_SITE_COUNT",
+          "type": "single_choice",
+          "prompt": "How many physical locations are connected to this network?",
+          "scored": false,
+          "options": [
+            { "key": "SINGLE_SITE", "label": "Single site" },
+            { "key": "MULTI_SITE", "label": "Multiple sites (site-to-site)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B_INTENT",
+      "title": "Business Intent",
+      "scored": false,
+      "questions": [
+        {
+          "id": "B1_USER_GROUPS",
+          "type": "single_choice",
+          "prompt": "Who needs network access?",
+          "scored": false,
+          "options": [
+            { "key": "STAFF_ONLY", "label": "Staff only" },
+            { "key": "STAFF_GUESTS", "label": "Staff + Guests" },
+            { "key": "STAFF_GUESTS_IOT", "label": "Staff + Guests + IoT (CCTV, printers, TVs, access systems)" }
+          ]
+        },
+        {
+          "id": "B2_LOCAL_RESOURCES",
+          "type": "single_choice",
+          "prompt": "Do internal devices need to communicate locally (e.g., file servers, NAS, printers, internal apps)?",
+          "scored": false,
+          "options": [
+            { "key": "CLOUD_ONLY", "label": "No (cloud/SaaS only)" },
+            { "key": "LOCAL_REQUIRED", "label": "Yes (local resources exist)" }
+          ]
+        },
+        {
+          "id": "B3_BYOD_WIFI",
+          "type": "single_choice",
+          "prompt": "Do employees connect personal devices (phones, personal laptops, tablets, smart watches) to office Wi-Fi?",
+          "scored": true,
+          "score_category": "segmentation",
+          "options": [
+            { "key": "YES_SEPARATE", "label": "Yes (separate SSID/network)" },
+            { "key": "YES_SAME", "label": "Yes (same network as work devices)" },
+            { "key": "NO", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C_PERIMETER",
+      "title": "Perimeter & Remote Access",
+      "scored": true,
+      "gates": ["G1"],
+      "questions": [
+        {
+          "id": "C1_WAN_ADMIN_EXPOSURE",
+          "type": "single_choice",
+          "prompt": "Is the login interface of any network device accessible from the public internet? (Firewall, router, switch, Wi-Fi controller)",
+          "scored": true,
+          "score_category": "perimeter",
+          "gate": "G1",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "C2_REMOTE_ACCESS_METHOD",
+          "type": "single_choice",
+          "prompt": "How do employees access internal systems from outside the office?",
+          "scored": true,
+          "score_category": "perimeter",
+          "gate": "G1",
+          "options": [
+            { "key": "VPN", "label": "Secure VPN" },
+            { "key": "CLOUD_ONLY", "label": "Cloud apps only (no internal network access)" },
+            { "key": "PORT_FORWARDING", "label": "Port forwarding / exposed RDP, SSH, or web admin" },
+            { "key": "NO_REMOTE", "label": "No remote access" }
+          ]
+        },
+        {
+          "id": "C3_ADMIN_MFA",
+          "type": "single_choice",
+          "prompt": "Is multi-factor authentication (MFA) enforced for network admin access?",
+          "scored": true,
+          "score_category": "identity",
+          "gate": "G1",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D_SEGMENTATION",
+      "title": "Segmentation & Isolation",
+      "scored": true,
+      "gates": ["G2", "G3"],
+      "questions": [
+        {
+          "id": "D1_GUEST_INTERNAL_ACCESS",
+          "type": "single_choice",
+          "prompt": "Can a guest on Wi-Fi access or discover internal systems (servers, printers, PCs)?",
+          "scored": true,
+          "score_category": "segmentation",
+          "gate": "G2",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "D2_VLAN_SEPARATION",
+          "type": "single_choice",
+          "prompt": "Do you use separate network segments (VLANs or equivalent) for different groups?",
+          "scored": true,
+          "score_category": "segmentation",
+          "gate": "G3",
+          "options": [
+            { "key": "FULL", "label": "Yes (Staff / Guest / IoT separated)" },
+            { "key": "PARTIAL", "label": "Partial separation" },
+            { "key": "FLAT", "label": "No (flat network)" }
+          ]
+        },
+        {
+          "id": "D3_IOT_WITH_FINANCE",
+          "type": "single_choice",
+          "prompt": "Are IoT / smart devices allowed on the same network as business-critical systems (e.g., accounting/payroll PCs)?",
+          "scored": true,
+          "score_category": "segmentation",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NA", "label": "Not applicable" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_WIRELESS",
+      "title": "Wireless Security",
+      "scored": true,
+      "questions": [
+        {
+          "id": "E1_CORP_WIFI_SECURITY",
+          "type": "single_choice",
+          "prompt": "Corporate Wi-Fi security method:",
+          "scored": true,
+          "score_category": "wireless",
+          "options": [
+            { "key": "ENTERPRISE", "label": "WPA2/WPA3 Enterprise (802.1X)" },
+            { "key": "PSK", "label": "WPA2/WPA3 Password (PSK)" },
+            { "key": "OPEN_OR_UNKNOWN", "label": "Open / Unknown" }
+          ]
+        },
+        {
+          "id": "E2_GUEST_CLIENT_ISOLATION",
+          "type": "single_choice",
+          "prompt": "Is guest Wi-Fi client isolation enabled (prevents guests from seeing each other’s devices)?",
+          "scored": true,
+          "score_category": "wireless",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F_HYGIENE",
+      "title": "Network Hygiene & Operations",
+      "scored": true,
+      "gates": ["G4", "G5"],
+      "questions": [
+        {
+          "id": "F1_UNUSED_PORTS_RESTRICTED",
+          "type": "single_choice",
+          "prompt": "Are unused network switch ports or wall jacks disabled or restricted?",
+          "scored": true,
+          "score_category": "hygiene",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "F2_CONFIG_BACKUPS",
+          "type": "single_choice",
+          "prompt": "If your firewall/router failed today, do you have a recent configuration backup stored elsewhere?",
+          "scored": true,
+          "score_category": "operations",
+          "gate": "G4",
+          "options": [
+            { "key": "AUTOMATED", "label": "Automated backups exist" },
+            { "key": "MANUAL", "label": "Manual backups exist" },
+            { "key": "NONE", "label": "No backups" }
+          ]
+        },
+        {
+          "id": "F3_LOGGING_EXISTS",
+          "type": "single_choice",
+          "prompt": "Are firewall or network logs stored anywhere for review?",
+          "scored": true,
+          "score_category": "operations",
+          "gate": "G5",
+          "options": [
+            { "key": "YES", "label": "Yes (centralized or local logging exists)" },
+            { "key": "NO", "label": "No logging" }
+          ]
+        },
+        {
+          "id": "F4_FIRMWARE_UPDATES",
+          "type": "single_choice",
+          "prompt": "How often are network devices updated (firmware/software)?",
+          "scored": true,
+          "score_category": "operations",
+          "options": [
+            { "key": "REGULAR", "label": "Regularly" },
+            { "key": "OCCASIONAL", "label": "Occasionally" },
+            { "key": "RARE", "label": "Rarely / Never" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G_INFO",
+      "title": "Advanced / Informational Only",
+      "scored": false,
+      "questions": [
+        {
+          "id": "G1_PUBLIC_SERVICES_ISOLATED",
+          "type": "single_choice",
+          "prompt": "If you host public-facing services (website, mail, apps), are they isolated from internal systems?",
+          "scored": false,
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NA", "label": "Not applicable" }
+          ]
+        },
+        {
+          "id": "G2_PHYSICAL_SECURITY",
+          "type": "single_choice",
+          "prompt": "Are core network devices located in a physically secured area?",
+          "scored": false,
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    }
+  ],
+  "gates": [
+    { "id": "G1", "name": "Internet Exposure", "cap": 40 },
+    { "id": "G2", "name": "Guest Isolation", "cap": 50 },
+    { "id": "G3", "name": "No Segmentation / Flat Network", "cap": 55 },
+    { "id": "G4", "name": "No Configuration Backups", "cap": 65 },
+    { "id": "G5", "name": "No Logging / Visibility", "cap": 70 }
+  ]
+}

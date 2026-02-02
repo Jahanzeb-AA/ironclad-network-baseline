@@ -1,0 +1,200 @@
+
+    <html>
+    <head><style>
+    body { font-family: Arial, sans-serif; color: #111; line-height: 1.35; }
+    .container { max-width: 900px; margin: 24px auto; padding: 0 12px; }
+    .header { border-bottom: 2px solid #eee; padding-bottom: 12px; margin-bottom: 16px; }
+    .muted { color: #555; font-size: 13px; }
+    .card { border: 1px solid #eee; border-radius: 10px; padding: 14px; margin: 12px 0; background: #fff; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .kpi { font-size: 34px; font-weight: 700; }
+    .kpi_sub { font-size: 13px; color: #555; }
+    h2 { margin: 22px 0 8px; }
+    h3 { margin: 16px 0 6px; }
+    ul { margin: 8px 0 0 18px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; }
+    .ref { margin-top: 8px; }
+    .ref span { margin-right: 8px; }
+    </style></head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>SMB Network Baseline Assessment Report</h1>
+          <div class="muted">This report evaluates baseline security architecture controls for small-to-medium business environments.</div>
+        </div>
+
+        <div class="card">
+          <div class="grid">
+            <div>
+              <div class="kpi">0/100</div>
+              <div class="kpi_sub">Overall Score</div>
+            </div>
+            <div>
+              <div class="kpi">F</div>
+              <div class="kpi_sub">Grade</div>
+            </div>
+          </div>
+          <div class="muted" style="margin-top:10px;">
+            Device-scale multiplier applied to selected categories: 1.25x<br/>
+            Score cap applied due to failed security gates. Maximum possible score in current state: 40/100.
+          </div>
+        </div>
+
+        <h2>Executive Summary</h2>
+        <div class="card">
+          <h3>Key Findings</h3>
+          <ul>
+            <li><b>Remove direct internet exposure of internal services</b>: Remote access to internal systems is provided via port forwarding / exposed services.</li><li><b>Restrict public access to management interfaces</b>: Administrative login interfaces for network equipment are reachable from the public internet (or this is unknown).</li><li><b>Implement basic network segmentation</b>: The network is flat (no meaningful segmentation), or segmentation status is unknown.</li>
+          </ul>
+
+          <h3 style="margin-top:14px;">Security Gates</h3>
+          <div class='card'><b>G1 — Perimeter Exposure</b><div class='muted'>Public exposure of administrative interfaces or internal services materially increases compromise risk.</div><ul><li>Admin interface reachable from internet (or unknown).</li><li>Remote access uses port forwarding/exposed services.</li></ul><div class='muted'>Cap: 40</div></div><div class='card'><b>G2 — Guest Isolation</b><div class='muted'>Guest or untrusted devices should not have access to internal systems.</div><ul><li>Guest devices can access internal systems (or unknown).</li></ul><div class='muted'>Cap: 50</div></div><div class='card'><b>G3 — Segmentation</b><div class='muted'>Basic segmentation is required to limit lateral movement and reduce blast radius.</div><ul><li>Network is flat / not segmented (or unknown).</li></ul><div class='muted'>Cap: 55</div></div><div class='card'><b>G4 — Configuration Backups</b><div class='muted'>Backups are necessary for recovery and operational resilience.</div><ul><li>No configuration backups (or unknown).</li></ul><div class='muted'>Cap: 65</div></div><div class='card'><b>G5 — Logging &amp; Visibility</b><div class='muted'>Logging is necessary for troubleshooting and incident detection.</div><ul><li>No network/firewall logging (or unknown).</li></ul><div class='muted'>Cap: 70</div></div>
+        </div>
+
+        <h2>Technical Findings</h2>
+        <div class="card">
+          <h3>Score Breakdown</h3>
+          <table>
+            <tr><th>Category</th><th>Deduction</th></tr>
+            <tr><td>Perimeter</td><td>60</td></tr>
+            <tr><td>Segmentation</td><td>35</td></tr>
+            <tr><td>Wireless</td><td>23</td></tr>
+            <tr><td>Hygiene/Operations</td><td>44</td></tr>
+            <tr><td><b>Multiplied total (seg+wifi+hyg)</b></td><td><b>111</b></td></tr>
+            <tr><td><b>Total deductions</b></td><td><b>171</b></td></tr>
+            <tr><td><b>Raw score</b></td><td><b>0</b></td></tr>
+            <tr><td><b>Cap applied</b></td><td><b>40</b></td></tr>
+          </table>
+        </div>
+
+        <h3>Critical Fixes</h3>
+        
+      <div class="card">
+        <b>Remove direct internet exposure of internal services</b>
+        <div class='muted'>Gate: G1</div>
+        <div style="margin-top:8px;"><b>Finding:</b> Remote access to internal systems is provided via port forwarding / exposed services.</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Remove direct internet exposure of internal services. Provide remote access using a client-to-site VPN with strong authentication. Prefer cloud/SaaS access where possible.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Direct exposure of internal services removes a key security boundary and is a common entry point for compromise in SMB environments.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Restrict public access to management interfaces</b>
+        <div class='muted'>Gate: G1</div>
+        <div style="margin-top:8px;"><b>Finding:</b> Administrative login interfaces for network equipment are reachable from the public internet (or this is unknown).</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Administrative access to network infrastructure should be reachable only from trusted internal networks or through a secure VPN. Public (WAN) management access should be disabled.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Publicly exposed management interfaces significantly increase the likelihood of unauthorized access through credential attacks or software vulnerabilities.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Implement basic network segmentation</b>
+        <div class='muted'>Gate: G3</div>
+        <div style="margin-top:8px;"><b>Finding:</b> The network is flat (no meaningful segmentation), or segmentation status is unknown.</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Implement at least basic segmentation suitable for SMBs (e.g., Staff, Guest, IoT, and optionally Management). Enforce inter-segment access rules via firewall/L3 controls using least privilege.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Segmentation limits lateral movement and reduces blast radius when endpoints are compromised.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Isolate guest access from internal systems</b>
+        <div class='muted'>Gate: G2</div>
+        <div style="margin-top:8px;"><b>Finding:</b> Guest/untrusted devices can access internal systems (or this is unknown).</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Place guest access on a dedicated network segment and enforce default-deny rules from guest to internal networks. Allow only necessary services (e.g., DHCP/DNS) and internet-bound traffic.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Guest devices should be treated as untrusted. Isolation reduces risk and limits visibility of internal assets.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Enforce MFA for administrative access</b>
+        <div class='muted'>Gate: G1</div>
+        <div style="margin-top:8px;"><b>Finding:</b> Multi-factor authentication (MFA) is not enforced for network administrative access (or this is unknown).</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Require MFA for all administrative access to firewalls, switches, Wi-Fi controllers, and management portals. Use app-based TOTP or hardware-backed methods where supported.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> MFA reduces the impact of password compromise and significantly improves the security of privileged access.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Establish configuration backups</b>
+        <div class='muted'>Gate: G4</div>
+        <div style="margin-top:8px;"><b>Finding:</b> No recent configuration backups are available (or this is unknown).</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Maintain backups of firewall/router/switch/Wi-Fi configurations. Store backups securely off-device and test restore procedures periodically.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Backups reduce downtime and enable fast recovery after device failure or misconfiguration.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Enable basic logging and retention</b>
+        <div class='muted'>Gate: G5</div>
+        <div style="margin-top:8px;"><b>Finding:</b> Network/firewall logs are not stored anywhere (or this is unknown).</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Enable firewall/network logging and store logs locally or centrally with reasonable retention. Ensure logs cover authentication events, configuration changes, and security-relevant traffic.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Without logs, troubleshooting and incident response are severely limited, and security events may go undetected.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Contain IoT/unmanaged devices</b>
+        
+        <div style="margin-top:8px;"><b>Finding:</b> IoT/unmanaged devices share the same network as business-critical systems.</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Move IoT/unmanaged devices to a restricted segment and allow only explicitly required communication to necessary internal services.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> IoT devices often have weaker security controls and may not be patched regularly; containment reduces exposure to critical systems.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Use modern Wi-Fi security</b>
+        
+        <div style="margin-top:8px;"><b>Finding:</b> Corporate Wi-Fi security is open/unknown.</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Use WPA2/WPA3 with a strong configuration. For business devices, consider WPA2/WPA3-Enterprise (802.1X) where feasible. Ensure guest access is separate from corporate access.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Open or unknown Wi-Fi security materially increases the risk of unauthorized network access.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+
+        <h3>Recommended Fixes</h3>
+        
+      <div class="card">
+        <b>Restrict unused network ports</b>
+        
+        <div style="margin-top:8px;"><b>Finding:</b> Unused switch ports or wall jacks are not disabled/restricted (or this is unknown).</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Disable unused switch ports or restrict them to a safe, non-production configuration. Document and review active ports periodically.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Open unused ports increase risk of unauthorized physical access and rogue devices joining the network.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Adopt a regular update cadence</b>
+        
+        <div style="margin-top:8px;"><b>Finding:</b> Network device firmware/software is rarely updated (or update cadence is unknown).</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Adopt a regular update process appropriate for SMBs (e.g., quarterly review with urgent security updates applied sooner). Track versions and changes.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Regular updates reduce exposure to known vulnerabilities and improve stability over time.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+      <div class="card">
+        <b>Enable guest client isolation</b>
+        
+        <div style="margin-top:8px;"><b>Finding:</b> Guest Wi-Fi client isolation is disabled or unknown.</div>
+        <div style="margin-top:6px;"><b>Policy intent:</b> Enable guest client isolation to prevent guest devices from communicating directly with each other. Combine this with network-level guest isolation from internal systems.</div>
+        <div style="margin-top:6px;"><b>Technical rationale:</b> Client isolation reduces opportunistic peer-to-peer attacks and limits lateral spread on guest networks.</div>
+        <div class="ref" style="margin-top:10px;"><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>CIS Controls (IG1)</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>NIST SMB Baseline</span><span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>Vendor Best Practice</span></div>
+      </div>
+    
+
+        <h2>Appendix</h2>
+        <div class="card">
+          <h3>Answers (as provided)</h3>
+          <table>
+            <tr><th>Question ID</th><th>Answer</th></tr>
+            <tr><td>A1_DEVICE_COUNT</td><td>R_200_500</td></tr><tr><td>C1_WAN_ADMIN_EXPOSURE</td><td>YES</td></tr><tr><td>C2_REMOTE_ACCESS_METHOD</td><td>PORT_FORWARDING</td></tr><tr><td>C3_ADMIN_MFA</td><td>NO</td></tr><tr><td>D1_GUEST_INTERNAL_ACCESS</td><td>YES</td></tr><tr><td>D2_VLAN_SEPARATION</td><td>FLAT</td></tr><tr><td>D3_IOT_WITH_FINANCE</td><td>YES</td></tr><tr><td>E1_CORP_WIFI_SECURITY</td><td>OPEN_OR_UNKNOWN</td></tr><tr><td>E2_GUEST_CLIENT_ISOLATION</td><td>NO</td></tr><tr><td>F1_UNUSED_PORTS_RESTRICTED</td><td>NO</td></tr><tr><td>F2_CONFIG_BACKUPS</td><td>NONE</td></tr><tr><td>F3_LOGGING_EXISTS</td><td>NO</td></tr><tr><td>F4_FIRMWARE_UPDATES</td><td>RARE</td></tr>
+          </table>
+          <div class="muted" style="margin-top:10px;">
+            Note: “Not sure” responses are treated as failing controls in this baseline assessment.
+          </div>
+        </div>
+
+      </div>
+    </body>
+    </html>
+    
