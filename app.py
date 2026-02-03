@@ -329,12 +329,15 @@ def main():
                 mime="application/json",
             )
 
-        # About at bottom (best place for UX)
+        # About at bottom
         st.write("---")
         render_about_tool()
 
         st.write("---")
-        st.caption(f"{PLATFORM_NAME} v{VERSION} • {ASSESSMENT_NAME} • Policy intent only • No vendor-specific scripts • No data stored")
+        st.caption(
+            "IRONCLAD © 2026 — Network Baseline (SMB) • Policy intent only • "
+            "Not a compliance audit • No data stored • No email required"
+        )
         return
 
     # =========================
@@ -379,13 +382,15 @@ def main():
             if not can_generate:
                 st.caption("Answer all questions to generate the report. (Or use “Load demo answers” for a quick demo.)")
 
-    # About at bottom so it doesn't push questions unless expanded
+    # About at bottom
     st.write("---")
     render_about_tool()
 
     st.write("---")
-    st.caption("IRONCLAD © 2026 — Network Baseline (SMB) • Policy intent only • "
-    "Not a compliance audit • No data stored • No email required")
+    st.caption(
+        "IRONCLAD © 2026 — Network Baseline (SMB) • Policy intent only • "
+        "Not a compliance audit • No data stored • No email required"
+    )
 
 
 if __name__ == "__main__":
