@@ -40,12 +40,11 @@ def init_state():
         st.session_state.report_html = None
     if "demo_mode" not in st.session_state:
         st.session_state.demo_mode = False
+    if "show_demo_notice" not in st.session_state:
+        st.session_state.show_demo_notice = False
 
 
 def inject_ui_css():
-    # Reliable selectors for your Streamlit version:
-    # - Question label: label[data-testid="stWidgetLabel"] p
-    # - Options: inside radiogroup labels
     st.markdown(
         """
         <style>
@@ -118,19 +117,27 @@ def reset_assessment():
     st.session_state.fixes = None
     st.session_state.report_html = None
     st.session_state.demo_mode = False
+    st.session_state.show_demo_notice = False
 
 
 def set_demo_answers(data: dict):
     """
     Demo mode: fill answers with a 'reasonable SMB baseline' set.
-    Strategy:
-    - Prefer "yes"/"implemented"/"enabled"/"segmented" type options if present
-    - Avoid "not sure"
-    - If only risk/negative options exist, pick the least risky label by simple heuristics
-    This keeps it generic and compatible with your questions.json structure.
+    Label-based heuristics:
+    - Prefer "yes/enabled/implemented/segmented/enforced"
+    - Avoid "not sure/unknown/no/none/disabled"
     """
     answers = {}
     sections = data.get("sections", [])
+
+    preferred_phrases = [
+        "yes", "enabled", "implemented", "in place", "configured", "enforced",
+        "required", "segmented", "isolated", "mfa", "2fa", "backup", "offline",
+        "immutable", "encrypted", "logged", "monitor", "patched", "updated",
+        "least privilege", "separate", "guest", "wpa3", "wpa2"
+    ]
+    avoid_phrases = ["not sure", "unknown", "no", "none", "disabled", "not implemented"]
+
     for section in sections:
         for q in section.get("questions", []):
             qid = q.get("id")
@@ -138,58 +145,44 @@ def set_demo_answers(data: dict):
             if not qid or not options:
                 continue
 
-            # Build helper arrays
             option_keys = [o.get("key", "") for o in options]
             option_labels = [o.get("label", "") for o in options]
 
-            # Heuristic preference order (label-based)
-            preferred_phrases = [
-                "yes", "enabled", "implemented", "in place", "configured", "enforced",
-                "required", "segmented", "isolated", "mfa", "2fa", "backups", "offline",
-                "immutable", "encrypted", "logged", "monitor", "patched", "updated",
-                "least privilege", "admin", "separate", "guest", "wpa3", "wpa2"
-            ]
-            avoid_phrases = ["not sure", "unknown", "no", "none", "disabled", "not implemented"]
-
-            # Pick best option by scoring labels
             best_idx = 0
-            best_score = -999
+            best_score = -10_000
 
             for i, label in enumerate(option_labels):
                 l = (label or "").strip().lower()
                 score = 0
 
-                # Reward preferred phrases
                 for p in preferred_phrases:
                     if p in l:
                         score += 3
 
-                # Penalize avoid phrases
                 for a in avoid_phrases:
                     if a in l:
                         score -= 5
 
-                # Extra penalty for explicit "not sure"
                 if "not sure" in l:
-                    score -= 20
+                    score -= 25
 
-                # Slight preference for shorter "clean" positive answers
-                score -= min(len(l) / 60, 2)
+                # Small penalty for very long labels (prefer clean)
+                score -= min(len(l) / 80, 2)
 
                 if score > best_score:
                     best_score = score
                     best_idx = i
 
-            # Save selected key
             selected_key = option_keys[best_idx] if best_idx < len(option_keys) else option_keys[0]
             answers[qid] = selected_key
 
     st.session_state.answers = answers
     st.session_state.demo_mode = True
     st.session_state.section_index = 0
+    st.session_state.show_demo_notice = True
 
 
-def render_section(section: dict, answers: dict, demo_mode: bool):
+def render_section(section: dict, answers: dict):
     st.header(section["title"])
     if not section.get("scored", False):
         st.caption("Informational section (does not directly affect score).")
@@ -204,39 +197,22 @@ def render_section(section: dict, answers: dict, demo_mode: bool):
 
         stored_key = answers.get(qid)
 
-        # ✅ IMPORTANT UX:
-        # If not answered yet AND not demo mode, don't force index=0 silently.
-        # Use "no default selection" by showing a placeholder-like behavior:
-        # Streamlit radio doesn't support None index, so we add an explicit first option.
-        if stored_key not in option_keys and not demo_mode:
-            labels_with_placeholder = ["— Select an answer —"] + option_labels
-            selected_label = st.radio(
-                prompt,
-                options=labels_with_placeholder,
-                index=0,
-                key=f"radio_{qid}",
-            )
-
-            if selected_label != "— Select an answer —":
-                selected_key = option_keys[option_labels.index(selected_label)]
-                answers[qid] = selected_key
-            else:
-                # Keep unanswered
-                pass
-
+        # If already answered, show that selection by default.
+        # If not answered, keep it blank by using index=None (no default selection).
+        if stored_key in option_keys:
+            default_index = option_keys.index(stored_key)
         else:
-            # Normal behavior (answered or demo)
-            default_index = 0
-            if stored_key in option_keys:
-                default_index = option_keys.index(stored_key)
+            default_index = None  # <-- No default selection
 
-            selected_label = st.radio(
-                prompt,
-                options=option_labels,
-                index=default_index,
-                key=f"radio_{qid}",
-            )
+        selected_label = st.radio(
+            prompt,
+            options=option_labels,
+            index=default_index,
+            key=f"radio_{qid}",
+        )
 
+        # Only store if user selected something (selected_label is None if not selected yet)
+        if selected_label is not None:
             selected_key = option_keys[option_labels.index(selected_label)]
             answers[qid] = selected_key
 
@@ -274,11 +250,19 @@ def main():
             st.rerun()
 
         st.markdown("---")
-        st.caption("Demo mode helps first-time visitors see the report instantly.")
+        st.caption("Demo mode fills answers to show the report quickly.")
 
     st.title(APP_TITLE)
     st.caption(APP_SUBTITLE)
-    render_about_tool()
+
+    # Small notice after demo selection
+    if st.session_state.show_demo_notice:
+        try:
+            st.toast("Demo answers have been selected.", icon="✅")
+        except Exception:
+            st.success("Demo answers have been selected.")
+        st.session_state.show_demo_notice = False
+
     st.write("---")
 
     # =========================
@@ -345,6 +329,10 @@ def main():
                 mime="application/json",
             )
 
+        # About at bottom (best place for UX)
+        st.write("---")
+        render_about_tool()
+
         st.write("---")
         st.caption(f"{PLATFORM_NAME} v{VERSION} • {ASSESSMENT_NAME} • Policy intent only • No vendor-specific scripts • No data stored")
         return
@@ -358,7 +346,7 @@ def main():
     st.progress((current + 1) / total)
     st.caption(f"Section {current + 1} of {total}")
 
-    render_section(sections[current], st.session_state.answers, st.session_state.demo_mode)
+    render_section(sections[current], st.session_state.answers)
 
     st.write("---")
     col_back, col_next = st.columns(2)
@@ -374,7 +362,6 @@ def main():
                 st.session_state.section_index = min(total - 1, current + 1)
                 st.rerun()
         else:
-            # Only allow report generation when everything is answered
             can_generate = all_questions_answered(data, st.session_state.answers)
 
             if st.button("Generate Report 📄", disabled=(not can_generate)):
@@ -390,7 +377,11 @@ def main():
                 st.rerun()
 
             if not can_generate:
-                st.caption("Answer all questions to generate the report. (Use “Load demo answers” for a quick demo.)")
+                st.caption("Answer all questions to generate the report. (Or use “Load demo answers” for a quick demo.)")
+
+    # About at bottom so it doesn't push questions unless expanded
+    st.write("---")
+    render_about_tool()
 
     st.write("---")
     st.caption("IRONCLAD v1.0 • Network Baseline (SMB) • Policy intent only • No vendor-specific scripts • No data stored")
