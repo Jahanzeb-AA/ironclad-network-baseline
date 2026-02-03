@@ -384,7 +384,8 @@ def main():
     render_about_tool()
 
     st.write("---")
-    st.caption("IRONCLAD v1.0 • Network Baseline (SMB) • Policy intent only • No vendor-specific scripts • No data stored")
+    st.caption("IRONCLAD © 2026 — Network Baseline (SMB) • Policy intent only • "
+    "Not a compliance audit • No data stored • No email required")
 
 
 if __name__ == "__main__":
