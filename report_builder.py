@@ -8,7 +8,28 @@ def _h(text: str) -> str:
 
 
 def _pill(label: str) -> str:
-    return f"<span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-right:6px'>{_h(label)}</span>"
+    return (
+        "<span style='display:inline-block;padding:2px 8px;border:1px solid #ccc;"
+        "border-radius:999px;font-size:12px;margin-right:6px'>"
+        f"{_h(label)}</span>"
+    )
+
+
+def _render_alerts(notes: List[str]) -> str:
+    if not notes:
+        return ""
+
+    items = "".join([f"<li>{_h(n)}</li>" for n in notes])
+
+    return f"""
+    <div class="card" style="border-left: 6px solid #111;">
+      <h3 style="margin-top:0;">High Priority Alerts</h3>
+      <div class="muted">These alerts highlight contradictions, unknowns, or architecture conditions that materially change risk.</div>
+      <ul style="margin-top:10px;">
+        {items}
+      </ul>
+    </div>
+    """
 
 
 def build_report_html(result: Dict[str, Any], fixes: Dict[str, Any], answers: Dict[str, str]) -> str:
@@ -16,6 +37,7 @@ def build_report_html(result: Dict[str, Any], fixes: Dict[str, Any], answers: Di
     grade = result["grade"]
     cap = result["cap_applied"]
     multiplier = result["device_multiplier"]
+    notes: List[str] = result.get("notes", []) or []
 
     gate_summaries: List[Dict[str, Any]] = fixes.get("gate_summaries", [])
     critical_fixes: List[Dict[str, Any]] = fixes.get("critical_fixes", [])
@@ -48,6 +70,8 @@ def build_report_html(result: Dict[str, Any], fixes: Dict[str, Any], answers: Di
     if cap < 100:
         cap_note = f"Score cap applied due to failed security gates. Maximum possible score in current state: {cap}/100."
 
+    alerts_html = _render_alerts(notes)
+
     # Build HTML
     html = f"""
     <html>
@@ -77,6 +101,9 @@ def build_report_html(result: Dict[str, Any], fixes: Dict[str, Any], answers: Di
         </div>
 
         <h2>Executive Summary</h2>
+
+        {alerts_html}
+
         <div class="card">
           <h3>Key Findings</h3>
           <ul>

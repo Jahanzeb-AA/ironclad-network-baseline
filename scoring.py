@@ -123,6 +123,40 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
         notes.append("Unknown device bucket; default multiplier applied (1.1x).")
 
     # -----------------------------
+    # Normalization Layer (Correctness Patch)
+    # If VLAN separation is FLAT/UNKNOWN, claims of Guest/IoT isolation are ineffective.
+    # We do NOT mutate answers; we use effective values for scoring + gates.
+    # -----------------------------
+    d2_raw = answers.get("D2_VLAN_SEPARATION")
+    is_flat = (d2_raw == "FLAT") or _is_not_sure(d2_raw)
+
+    d1_raw = answers.get("D1_GUEST_INTERNAL_ACCESS")
+    d3_raw = answers.get("D3_IOT_WITH_FINANCE")
+
+    # If the network is flat/unknown, treat these controls as failing in effect:
+    # - Guests are assumed able to reach internal (YES) because isolation is not meaningful.
+    # - IoT is assumed to share with critical (YES) because there are no boundaries.
+    effective_d1 = "YES" if is_flat else d1_raw
+    effective_d3 = "YES" if is_flat else d3_raw
+
+    # If user claimed isolation on a flat/unknown network, call out the conflict
+    # (D1 == NO means "guest cannot access internal" which implies isolation exists)
+    # (D3 == NO means "IoT does not share with critical" which implies separation exists)
+    if is_flat and ((d1_raw == "NO") or (d3_raw == "NO")):
+        notes.append(
+            "⚠️ LOGIC CONFLICT: Guest/IoT isolation claims are technically ineffective on a flat/unknown network "
+            "architecture. These controls have been treated as failing for scoring."
+        )
+
+    # Correlation: local resources + flat network = higher blast radius
+    has_local_resources = answers.get("A3_LOCAL_RESOURCES") == "YES"
+    if is_flat and has_local_resources:
+        notes.append(
+            "🛑 HIGH RISK: Local servers/internal applications on a flat/unknown network increase lateral movement risk "
+            "and ransomware blast radius (no containment boundaries)."
+        )
+
+    # -----------------------------
     # Gate evaluation (LOCKED logic)
     # -----------------------------
     gates: List[GateResult] = []
@@ -141,7 +175,7 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
 
     # Gate G2: Guest Isolation
     g2_reasons: List[str] = []
-    d1 = answers.get("D1_GUEST_INTERNAL_ACCESS")
+    d1 = effective_d1  # use effective value
     if d1 == "YES" or _is_not_sure(d1):
         g2_reasons.append("Guest devices can access internal systems (or unknown).")
     g2_failed = len(g2_reasons) > 0
@@ -149,7 +183,7 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
 
     # Gate G3: No Segmentation / Flat Network
     g3_reasons: List[str] = []
-    d2 = answers.get("D2_VLAN_SEPARATION")
+    d2 = d2_raw
     if d2 == "FLAT" or _is_not_sure(d2):
         g3_reasons.append("Network is flat / not segmented (or unknown).")
     g3_failed = len(g3_reasons) > 0
@@ -217,8 +251,8 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
     if d1 == "YES" or _is_not_sure(d1):
         failed_controls.append("CTRL_SEGMENTATION_GUEST_NOT_ISOLATED")
 
-    # IoT with critical: -10 (YES)
-    d3 = answers.get("D3_IOT_WITH_FINANCE")
+    # IoT with critical: -10 (YES)  -> use effective value
+    d3 = effective_d3
     if d3 == "YES":
         segmentation_ded += 10
         failed_controls.append("CTRL_SEGMENTATION_IOT_WITH_CRITICAL")
