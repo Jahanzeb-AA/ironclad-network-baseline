@@ -1,0 +1,256 @@
+{
+  "version": "v1.0",
+  "product": "endpoint-security-baseline-assessment",
+  "principles": {
+    "not_sure_treated_as_fail": true,
+    "partial_answers_reduced_penalty": true,
+    "business_friendly_scoring": true
+  },
+  "sections": [
+    {
+      "id": "A_SCOPE",
+      "title": "Scope",
+      "scored": false,
+      "questions": [
+        {
+          "id": "A1_ENDPOINT_COUNT",
+          "type": "single_choice",
+          "prompt": "Approximately how many business endpoints are in scope? Include laptops, desktops, and shared workstations.",
+          "scored": false,
+          "options": [
+            { "key": "U_1_25", "label": "1-25" },
+            { "key": "U_26_100", "label": "26-100" },
+            { "key": "U_101_300", "label": "101-300" },
+            { "key": "U_301_1000", "label": "301-1000" },
+            { "key": "U_1000_PLUS", "label": "1000+" }
+          ]
+        },
+        {
+          "id": "A2_DEVICE_OWNERSHIP",
+          "type": "single_choice",
+          "prompt": "Are endpoints mostly company-owned or employee-owned?",
+          "scored": false,
+          "options": [
+            { "key": "COMPANY_OWNED", "label": "Mostly company-owned" },
+            { "key": "MIXED", "label": "Mixed company-owned and BYOD" },
+            { "key": "MOSTLY_BYOD", "label": "Mostly employee-owned" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B_PROTECTION",
+      "title": "Protection",
+      "scored": true,
+      "questions": [
+        {
+          "id": "B1_ENDPOINT_PROTECTION",
+          "type": "single_choice",
+          "prompt": "Is endpoint protection or EDR installed and active on business endpoints?",
+          "scored": true,
+          "score_category": "protection",
+          "gate": "G1",
+          "options": [
+            { "key": "YES_MANAGED", "label": "Yes, centrally managed" },
+            { "key": "YES_BASIC", "label": "Yes, basic antivirus only" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "B2_DISK_ENCRYPTION",
+          "type": "single_choice",
+          "prompt": "Is full-disk encryption enabled on laptops and portable endpoints?",
+          "scored": true,
+          "score_category": "protection",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "PARTIAL", "label": "Partially enabled" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "B3_FIREWALL_ENABLED",
+          "type": "single_choice",
+          "prompt": "Are host firewalls enabled on endpoints?",
+          "scored": true,
+          "score_category": "protection",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "PARTIAL", "label": "Partially" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C_PATCHING",
+      "title": "Patching",
+      "scored": true,
+      "questions": [
+        {
+          "id": "C1_OS_PATCHING",
+          "type": "single_choice",
+          "prompt": "Are operating system updates applied on a regular schedule?",
+          "scored": true,
+          "score_category": "patching",
+          "gate": "G2",
+          "options": [
+            { "key": "AUTOMATED", "label": "Automated and monitored" },
+            { "key": "MANUAL", "label": "Manual but regular" },
+            { "key": "RARE", "label": "Rarely or inconsistently" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "C2_THIRD_PARTY_PATCHING",
+          "type": "single_choice",
+          "prompt": "Are common third-party apps such as browsers, PDF tools, and collaboration apps patched?",
+          "scored": true,
+          "score_category": "patching",
+          "options": [
+            { "key": "AUTOMATED", "label": "Automated" },
+            { "key": "MANUAL", "label": "Manual" },
+            { "key": "NO", "label": "No process" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "C3_UNSUPPORTED_OS",
+          "type": "single_choice",
+          "prompt": "Are any endpoints running unsupported operating systems?",
+          "scored": true,
+          "score_category": "patching",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES_FEW", "label": "Yes, a small number" },
+            { "key": "YES_MANY", "label": "Yes, many" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D_ACCESS",
+      "title": "Access",
+      "scored": true,
+      "questions": [
+        {
+          "id": "D1_LOCAL_ADMIN",
+          "type": "single_choice",
+          "prompt": "Do standard users have local administrator rights on their endpoints?",
+          "scored": true,
+          "score_category": "access",
+          "gate": "G3",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "LIMITED", "label": "Limited exceptions" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "D2_SCREEN_LOCK",
+          "type": "single_choice",
+          "prompt": "Are screen lock and password or PIN requirements enforced?",
+          "scored": true,
+          "score_category": "access",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "PARTIAL", "label": "Partially" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "D3_REMOTE_ACCESS_MFA",
+          "type": "single_choice",
+          "prompt": "Is MFA required for remote access to endpoints or remote management tools?",
+          "scored": true,
+          "score_category": "access",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "PARTIAL", "label": "Partially" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_MONITORING",
+      "title": "Monitoring",
+      "scored": true,
+      "questions": [
+        {
+          "id": "E1_SECURITY_ALERTS",
+          "type": "single_choice",
+          "prompt": "Are endpoint security alerts reviewed by someone responsible for security or IT?",
+          "scored": true,
+          "score_category": "monitoring",
+          "gate": "G4",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "PARTIAL", "label": "Sometimes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "E2_DEVICE_INVENTORY",
+          "type": "single_choice",
+          "prompt": "Is there a current inventory of business endpoints?",
+          "scored": true,
+          "score_category": "monitoring",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "PARTIAL", "label": "Partial inventory" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F_BACKUP",
+      "title": "Backup",
+      "scored": true,
+      "questions": [
+        {
+          "id": "F1_ENDPOINT_BACKUP",
+          "type": "single_choice",
+          "prompt": "Are important endpoint files backed up or redirected to protected cloud storage?",
+          "scored": true,
+          "score_category": "backup",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "PARTIAL", "label": "Partially" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "F2_RESTORE_TESTING",
+          "type": "single_choice",
+          "prompt": "Have endpoint restore or file recovery steps been tested?",
+          "scored": true,
+          "score_category": "backup",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    }
+  ],
+  "gates": [
+    { "id": "G1", "name": "No Managed Endpoint Protection", "cap": 45 },
+    { "id": "G2", "name": "Endpoint Patching Not Controlled", "cap": 55 },
+    { "id": "G3", "name": "Excessive Local Administrator Access", "cap": 60 },
+    { "id": "G4", "name": "No Endpoint Alert Review", "cap": 70 }
+  ]
+}

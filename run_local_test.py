@@ -1,10 +1,11 @@
-from scoring import score_assessment_dict
-from policy_intent import generate_fix_blocks
-from report_builder import build_report_html
+from core.scoring_engine import score_assessment_dict
+from modules.network.policy_intent import generate_fix_blocks
+from reporting.report_builder import build_report_html
 
-# Example answers (intentionally weak)
+
 answers = {
-    "A1_DEVICE_COUNT": "R_200_500",
+    "A1_DEVICE_COUNT": "U_101_300",
+    "B2_LOCAL_RESOURCES": "LOCAL_REQUIRED",
     "C1_WAN_ADMIN_EXPOSURE": "YES",
     "C2_REMOTE_ACCESS_METHOD": "PORT_FORWARDING",
     "C3_ADMIN_MFA": "NO",
@@ -16,12 +17,13 @@ answers = {
     "F1_UNUSED_PORTS_RESTRICTED": "NO",
     "F2_CONFIG_BACKUPS": "NONE",
     "F3_LOGGING_EXISTS": "NO",
-    "F4_FIRMWARE_UPDATES": "RARE"
+    "F4_FIRMWARE_UPDATES": "RARE",
+    "F5_DEFAULT_CREDENTIALS": "NO",
+    "G3_SENSITIVE_DATA": "YES",
 }
 
 result = score_assessment_dict(answers)
 fixes = generate_fix_blocks(result["failed_controls"], result["gates"])
-
 html = build_report_html(result, fixes, answers)
 
 with open("report.html", "w", encoding="utf-8") as f:
@@ -29,3 +31,5 @@ with open("report.html", "w", encoding="utf-8") as f:
 
 print("Generated report.html - open it in your browser.")
 print("Final score:", result["final_score"], "Grade:", result["grade"])
+print("Failed controls:", len(result["failed_controls"]))
+print("Fixes:", len(fixes))
