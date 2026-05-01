@@ -29,6 +29,12 @@ BASELINE_CONFIG: Dict[str, Dict[str, str]] = {
         "policy_module": "modules.endpoint.policy_intent",
         "scoring_module": "core.endpoint_scoring_engine",
     },
+    "ad": {
+        "name": "Active Directory (on-prem)",
+        "questions_path": "modules/ad/questions.json",
+        "policy_module": "modules.ad.policy_intent",
+        "scoring_module": "core.ad_scoring_engine",
+    },
 }
 
 

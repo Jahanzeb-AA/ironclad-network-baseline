@@ -30,6 +30,11 @@ BASELINES = {
         "policy_module": "modules.endpoint.policy_intent",
         "scoring_module": "core.endpoint_scoring_engine",
     },
+    "ad": {
+        "questions_path": "modules/ad/questions.json",
+        "policy_module": "modules.ad.policy_intent",
+        "scoring_module": "core.ad_scoring_engine",
+    },
 }
 
 
@@ -99,6 +104,37 @@ SECURE_ANSWERS = {
         "H1_ENDPOINT_BACKUP": "YES",
         "H2_RESTORE_TESTING": "YES",
     },
+    "ad": {
+        "A1_DOMAIN_COUNT": "SINGLE",
+        "A2_DC_COUNT": "TWO_THREE",
+        "A3_HYBRID": "NO",
+        "A4_USER_COUNT": "R_50_200",
+        "A5_SERVICE_ACCOUNTS": "YES",
+        "B1_STALE_USERS": "NO",
+        "B2_STALE_COMPUTERS": "NO",
+        "B3_SHARED_ACCOUNTS": "NO",
+        "B4_GUEST_ACCOUNT": "NO",
+        "C1_DA_COUNT": "LT_3",
+        "C2_DA_DAILY_USE": "NO",
+        "C3_DEFAULT_ADMIN_EXPOSED": "NO",
+        "C4_SERVICE_ACCOUNT_DA": "NO",
+        "D1_PASSWORD_POLICY": "STRONG",
+        "D2_ACCOUNT_LOCKOUT": "YES",
+        "D3_PASSWORD_NEVER_EXPIRES": "NO",
+        "E1_ASREP_ROASTING": "NO",
+        "E2_WEAK_SPN": "NO",
+        "E3_NTLMV1": "NO",
+        "F1_LAPS": "YES",
+        "F2_GPO_REVIEW": "YES",
+        "F3_RESTRICTED_GROUPS": "YES",
+        "G1_DC_OS": "YES",
+        "G2_DC_PATCHING": "YES",
+        "G3_MIXED_ROLES": "NO",
+        "G4_DC_ACCESS_RESTRICTED": "YES",
+        "H1_AD_AUDIT_LOGGING": "YES",
+        "H2_LOG_REVIEW": "YES",
+        "H3_AD_BACKUP": "YES",
+    },
 }
 
 
@@ -124,6 +160,17 @@ MIXED_OVERRIDES = {
         "E1_LOCAL_ADMIN_RIGHTS": "LIMITED",
         "F2_APPLICATION_RESTRICTIONS": "PARTIAL",
         "H1_ENDPOINT_BACKUP": "PARTIAL",
+    },
+    "ad": {
+        "A3_HYBRID": "YES",
+        "A4_USER_COUNT": "R_200_500",
+        "C1_DA_COUNT": "R_3_5",
+        "C3_DEFAULT_ADMIN_EXPOSED": "YES",
+        "D1_PASSWORD_POLICY": "WEAK",
+        "E2_WEAK_SPN": "YES",
+        "F2_GPO_REVIEW": "NO",
+        "G3_MIXED_ROLES": "YES",
+        "H2_LOG_REVIEW": "NO",
     },
 }
 

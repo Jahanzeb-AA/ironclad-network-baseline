@@ -1,0 +1,433 @@
+{
+  "version": "v1.0",
+  "product": "active-directory-baseline-assessment",
+  "principles": {
+    "not_sure_treated_as_fail": true,
+    "business_friendly_scoring": true,
+    "service_account_controls_apply_when_in_scope": true
+  },
+  "sections": [
+    {
+      "id": "A_SCOPE",
+      "title": "Scope",
+      "scored": false,
+      "questions": [
+        {
+          "id": "A1_DOMAIN_COUNT",
+          "type": "single_choice",
+          "prompt": "How many Active Directory domains are in scope?",
+          "scored": false,
+          "options": [
+            { "key": "SINGLE", "label": "Single domain" },
+            { "key": "MULTIPLE", "label": "Multiple domains" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "A2_DC_COUNT",
+          "type": "single_choice",
+          "prompt": "How many domain controllers are in scope?",
+          "scored": false,
+          "options": [
+            { "key": "ONE", "label": "One" },
+            { "key": "TWO_THREE", "label": "Two or three" },
+            { "key": "FOUR_PLUS", "label": "Four or more" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "A3_HYBRID",
+          "type": "single_choice",
+          "prompt": "Is this Active Directory environment synchronized with Microsoft 365 or Entra ID?",
+          "scored": false,
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "A4_USER_COUNT",
+          "type": "single_choice",
+          "prompt": "Approximately how many enabled AD user accounts exist?",
+          "scored": false,
+          "options": [
+            { "key": "LT_50", "label": "Less than 50" },
+            { "key": "R_50_200", "label": "50-200" },
+            { "key": "R_200_500", "label": "200-500" },
+            { "key": "R_500_1000", "label": "500-1000" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "A5_SERVICE_ACCOUNTS",
+          "type": "single_choice",
+          "prompt": "Do you have service accounts configured in Active Directory?",
+          "scored": false,
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B_ACCOUNT_HYGIENE",
+      "title": "Account Hygiene",
+      "scored": true,
+      "questions": [
+        {
+          "id": "B1_STALE_USERS",
+          "type": "single_choice",
+          "prompt": "Are stale or inactive user accounts present?",
+          "scored": true,
+          "score_category": "account_hygiene",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "B2_STALE_COMPUTERS",
+          "type": "single_choice",
+          "prompt": "Are stale or inactive computer accounts present?",
+          "scored": true,
+          "score_category": "account_hygiene",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "B3_SHARED_ACCOUNTS",
+          "type": "single_choice",
+          "prompt": "Are shared user accounts used?",
+          "scored": true,
+          "score_category": "account_hygiene",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "B4_GUEST_ACCOUNT",
+          "type": "single_choice",
+          "prompt": "Is the built-in Guest account enabled?",
+          "scored": true,
+          "score_category": "account_hygiene",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C_PRIVILEGED_ACCESS",
+      "title": "Privileged Access",
+      "scored": true,
+      "questions": [
+        {
+          "id": "C1_DA_COUNT",
+          "type": "single_choice",
+          "prompt": "How many Domain Admin accounts exist?",
+          "scored": true,
+          "score_category": "privileged_access",
+          "gate": "G1",
+          "options": [
+            { "key": "LT_3", "label": "Fewer than 3" },
+            { "key": "R_3_5", "label": "3-5" },
+            { "key": "DA_6_PLUS", "label": "6+" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "C2_DA_DAILY_USE",
+          "type": "single_choice",
+          "prompt": "Are Domain Admin accounts used for daily work?",
+          "scored": true,
+          "score_category": "privileged_access",
+          "gate": "G1",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "C3_DEFAULT_ADMIN_EXPOSED",
+          "type": "single_choice",
+          "prompt": "Is the default Administrator account exposed or actively used?",
+          "scored": true,
+          "score_category": "privileged_access",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "C4_SERVICE_ACCOUNT_DA",
+          "type": "single_choice",
+          "prompt": "Do any service accounts have Domain Admin privileges?",
+          "scored": true,
+          "score_category": "privileged_access",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D_PASSWORD_POLICY",
+      "title": "Password Policy",
+      "scored": true,
+      "questions": [
+        {
+          "id": "D1_PASSWORD_POLICY",
+          "type": "single_choice",
+          "prompt": "Is an AD password policy configured and aligned to business requirements?",
+          "scored": true,
+          "score_category": "password_policy",
+          "gate": "G2",
+          "options": [
+            { "key": "STRONG", "label": "Yes, strong policy" },
+            { "key": "WEAK", "label": "Yes, but weak" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "D2_ACCOUNT_LOCKOUT",
+          "type": "single_choice",
+          "prompt": "Is account lockout configured?",
+          "scored": true,
+          "score_category": "password_policy",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "D3_PASSWORD_NEVER_EXPIRES",
+          "type": "single_choice",
+          "prompt": "Do many user passwords never expire?",
+          "scored": true,
+          "score_category": "password_policy",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_KERBEROS_AUTH",
+      "title": "Kerberos & Auth",
+      "scored": true,
+      "questions": [
+        {
+          "id": "E1_ASREP_ROASTING",
+          "type": "single_choice",
+          "prompt": "Are any accounts configured without Kerberos pre-authentication?",
+          "scored": true,
+          "score_category": "kerberos_auth",
+          "gate": "G3",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "E2_WEAK_SPN",
+          "type": "single_choice",
+          "prompt": "Are SPN/service accounts weak, stale, or poorly controlled?",
+          "scored": true,
+          "score_category": "kerberos_auth",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "E3_NTLMV1",
+          "type": "single_choice",
+          "prompt": "Is NTLMv1 allowed?",
+          "scored": true,
+          "score_category": "kerberos_auth",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F_LAPS_GPO",
+      "title": "LAPS & GPO",
+      "scored": true,
+      "questions": [
+        {
+          "id": "F1_LAPS",
+          "type": "single_choice",
+          "prompt": "Is LAPS or Windows LAPS used for local administrator password management?",
+          "scored": true,
+          "score_category": "laps_gpo",
+          "gate": "G4",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "F2_GPO_REVIEW",
+          "type": "single_choice",
+          "prompt": "Are Group Policies reviewed periodically?",
+          "scored": true,
+          "score_category": "laps_gpo",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "F3_RESTRICTED_GROUPS",
+          "type": "single_choice",
+          "prompt": "Are local administrator groups controlled through policy?",
+          "scored": true,
+          "score_category": "laps_gpo",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G_DC_HYGIENE",
+      "title": "Domain Controller Hygiene",
+      "scored": true,
+      "questions": [
+        {
+          "id": "G1_DC_OS",
+          "type": "single_choice",
+          "prompt": "Are all domain controllers running supported operating systems?",
+          "scored": true,
+          "score_category": "dc_hygiene",
+          "gate": "G5",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "G2_DC_PATCHING",
+          "type": "single_choice",
+          "prompt": "Are domain controllers patched regularly?",
+          "scored": true,
+          "score_category": "dc_hygiene",
+          "gate": "G5",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "G3_MIXED_ROLES",
+          "type": "single_choice",
+          "prompt": "Do domain controllers run other business roles or applications?",
+          "scored": true,
+          "score_category": "dc_hygiene",
+          "options": [
+            { "key": "NO", "label": "No" },
+            { "key": "YES", "label": "Yes" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "G4_DC_ACCESS_RESTRICTED",
+          "type": "single_choice",
+          "prompt": "Is access to domain controllers restricted to authorized administrators?",
+          "scored": true,
+          "score_category": "dc_hygiene",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H_MONITORING_BACKUP",
+      "title": "Monitoring & Backup",
+      "scored": true,
+      "questions": [
+        {
+          "id": "H1_AD_AUDIT_LOGGING",
+          "type": "single_choice",
+          "prompt": "Is AD audit logging enabled?",
+          "scored": true,
+          "score_category": "monitoring_backup",
+          "gate": "G6",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "H2_LOG_REVIEW",
+          "type": "single_choice",
+          "prompt": "Are AD security logs reviewed?",
+          "scored": true,
+          "score_category": "monitoring_backup",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        },
+        {
+          "id": "H3_AD_BACKUP",
+          "type": "single_choice",
+          "prompt": "Are Active Directory system state or domain controller backups available?",
+          "scored": true,
+          "score_category": "monitoring_backup",
+          "gate": "G7",
+          "options": [
+            { "key": "YES", "label": "Yes" },
+            { "key": "NO", "label": "No" },
+            { "key": "NOT_SURE", "label": "Not sure" }
+          ]
+        }
+      ]
+    }
+  ],
+  "gates": [
+    { "id": "G1", "name": "DA misuse", "cap": 40 },
+    { "id": "G2", "name": "Weak or no password policy", "cap": 50 },
+    { "id": "G3", "name": "AS-REP exposure", "cap": 55 },
+    { "id": "G4", "name": "No LAPS", "cap": 60 },
+    { "id": "G5", "name": "DC hygiene failure", "cap": 65 },
+    { "id": "G6", "name": "No logging", "cap": 70 },
+    { "id": "G7", "name": "No backup", "cap": 75 }
+  ]
+}
