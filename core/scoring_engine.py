@@ -98,6 +98,13 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
     gates: List[GateResult] = []
 
     device_bucket = answers.get("A1_DEVICE_COUNT", "U_26_100")
+    vendor_profile = answers.get("A2_VENDOR_PROFILE")
+    site_count = answers.get("A3_SITE_COUNT")
+    user_groups = answers.get("B1_USER_GROUPS")
+    byod_wifi = answers.get("B3_BYOD_WIFI")
+    dns_filtering = answers.get("F6_DNS_FILTERING")
+    public_services_isolated = answers.get("G1_PUBLIC_SERVICES_ISOLATED")
+    physical_security = answers.get("G2_PHYSICAL_SECURITY")
     multiplier = DEVICE_MULTIPLIER.get(device_bucket, 1.1)
 
     c1 = answers.get("C1_WAN_ADMIN_EXPOSURE")
@@ -124,6 +131,27 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
         notes.append(
             "This environment processes sensitive data. Security gaps may affect regulatory or contractual obligations."
         )
+
+    if vendor_profile == "MIXED":
+        notes.append("Mixed-vendor networks may need extra attention to consistent policy enforcement.")
+
+    if site_count == "MULTI_SITE":
+        notes.append("Multiple connected locations increase the value of consistent segmentation and remote access controls.")
+
+    if user_groups in ("STAFF_GUESTS", "STAFF_GUESTS_IOT"):
+        notes.append("Guest or IoT access should remain separated from staff and business-critical systems.")
+
+    if byod_wifi == "YES_SAME":
+        notes.append("Personal devices on the same Wi-Fi as business devices can increase endpoint and lateral movement risk.")
+
+    if dns_filtering == "NO":
+        notes.append("Protective DNS filtering is not in use; this may reduce protection against malicious domains.")
+
+    if public_services_isolated == "NO":
+        notes.append("Public-facing services should be isolated from internal systems where possible.")
+
+    if physical_security == "NO":
+        notes.append("Physical access to core network devices should be restricted.")
 
     g1_reasons = []
     if c1 == "YES" or _is_not_sure(c1):

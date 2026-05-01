@@ -108,6 +108,13 @@ def _validate_scoring_references(
         if direct_qid:
             referenced_qids.add(direct_qid)
 
+    unused_questions = sorted(all_question_ids - referenced_qids)
+    if unused_questions:
+        raise BaselineValidationError(
+            "Question is not referenced in scoring logic: "
+            + ", ".join(unused_questions)
+        )
+
     missing_scored = sorted(scored_question_ids - referenced_qids)
     if missing_scored:
         raise BaselineValidationError(
@@ -224,6 +231,98 @@ def _emitted_failed_controls(
     return emitted
 
 
+def _declared_gate_ids(questions_json: Dict[str, Any]) -> Set[str]:
+    return {
+        str(gate.get("id"))
+        for gate in questions_json.get("gates", [])
+        if gate.get("id") is not None
+    }
+
+
+def _validate_gate_schema(gate: Any) -> str:
+    if not isinstance(gate, dict):
+        raise BaselineValidationError(f"Gate result must be a dictionary: {gate}")
+
+    for required_key in ("gate_id", "failed", "cap", "reasons"):
+        if required_key not in gate:
+            raise BaselineValidationError(
+                f"Missing gate field '{required_key}' for gate: {gate}"
+            )
+
+    gate_id = str(gate.get("gate_id", ""))
+    if not gate_id:
+        raise BaselineValidationError("Gate id cannot be empty")
+
+    if not isinstance(gate.get("reasons"), list):
+        raise BaselineValidationError(f"Gate reasons must be a list for gate: {gate_id}")
+
+    return gate_id
+
+
+def _emitted_gate_ids(
+    option_keys_by_qid: Dict[str, Set[str]],
+    scoring_module: ModuleType,
+) -> Set[str]:
+    emitted: Set[str] = set()
+    base = _base_answers(option_keys_by_qid)
+
+    test_answer_sets: List[Dict[str, str]] = [base]
+    for qid, keys in option_keys_by_qid.items():
+        for key in keys:
+            answers = dict(base)
+            answers[qid] = key
+            test_answer_sets.append(answers)
+
+    for answers in test_answer_sets:
+        result = scoring_module.score_assessment_dict(answers)
+        for gate in result.get("gates", []):
+            emitted.add(_validate_gate_schema(gate))
+
+    return emitted
+
+
+def _validate_gate_mappings(
+    questions_json: Dict[str, Any],
+    option_keys_by_qid: Dict[str, Set[str]],
+    scoring_module: ModuleType,
+) -> None:
+    declared_gate_ids = _declared_gate_ids(questions_json)
+    scoring_gate_caps = getattr(scoring_module, "GATE_CAPS", {})
+    if not isinstance(scoring_gate_caps, dict):
+        raise BaselineValidationError("Scoring module is missing GATE_CAPS")
+
+    scoring_gate_ids = {str(gate_id) for gate_id in scoring_gate_caps.keys()}
+
+    missing_in_scoring = sorted(declared_gate_ids - scoring_gate_ids)
+    if missing_in_scoring:
+        raise BaselineValidationError(
+            "Gate declared in questions but missing in scoring: "
+            + ", ".join(missing_in_scoring)
+        )
+
+    unknown_in_scoring = sorted(scoring_gate_ids - declared_gate_ids)
+    if unknown_in_scoring:
+        raise BaselineValidationError(
+            "Gate defined in scoring but missing in questions: "
+            + ", ".join(unknown_in_scoring)
+        )
+
+    emitted_gate_ids = _emitted_gate_ids(option_keys_by_qid, scoring_module)
+    unknown_emitted = sorted(emitted_gate_ids - declared_gate_ids)
+    if unknown_emitted:
+        raise BaselineValidationError(
+            "Gate returned by scoring but missing in questions: "
+            + ", ".join(unknown_emitted)
+        )
+
+    unreachable_gates = sorted(declared_gate_ids - emitted_gate_ids)
+    if unreachable_gates:
+        raise BaselineValidationError(
+            "Gate is declared but was not returned by scoring in validation cases: "
+            + ", ".join(unreachable_gates)
+        )
+
+
 def _failed_control_id(control: Any) -> str:
     if isinstance(control, dict):
         return str(control.get("id", ""))
@@ -267,6 +366,7 @@ def validate_baseline(
         all_question_ids=all_question_ids,
         scored_question_ids=scored_question_ids,
     )
+    _validate_gate_mappings(questions_json, option_keys_by_qid, scoring_module)
 
     emitted_controls = _emitted_failed_controls(option_keys_by_qid, scoring_module)
     policy_ids = _policy_mapping_ids(policy_module)

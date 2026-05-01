@@ -4,147 +4,180 @@ from typing import Any, Dict, List
 
 
 CONTROL_FIX_LIBRARY: Dict[str, Dict[str, Any]] = {
-    "CTRL_ENDPOINT_PROTECTION_NOT_MANAGED": {
-        "id": "CTRL_ENDPOINT_PROTECTION_NOT_MANAGED",
+    "CTRL_ENDPOINT_AV_EDR_MISSING": {
+        "id": "CTRL_ENDPOINT_AV_EDR_MISSING",
         "severity": "high",
-        "title": "Deploy managed endpoint protection",
-        "why": "Managed endpoint protection helps detect malware, suspicious behavior, and risky activity before it becomes a wider business incident.",
+        "title": "Deploy AV/EDR across endpoints",
+        "why": "Endpoints without AV or EDR are more exposed to malware, credential theft, and ransomware activity.",
         "steps": [
-            "Choose an endpoint protection or EDR tool appropriate for the business size.",
-            "Install and verify protection on all business endpoints.",
-            "Enable centralized policy management, alerting, and tamper protection where available.",
+            "Deploy endpoint protection to all business laptops, desktops, and shared workstations.",
+            "Confirm all endpoints report as protected.",
+            "Prioritize devices used by administrators, finance, and leadership.",
+        ],
+    },
+    "CTRL_ENDPOINT_REALTIME_PROTECTION_DISABLED": {
+        "id": "CTRL_ENDPOINT_REALTIME_PROTECTION_DISABLED",
+        "severity": "high",
+        "title": "Enable real-time protection",
+        "why": "Real-time protection helps block malicious files and behavior before users or systems are affected.",
+        "steps": [
+            "Enable real-time protection in the endpoint security platform.",
+            "Prevent users from disabling protection where supported.",
+            "Review endpoints where protection is disabled or unhealthy.",
+        ],
+    },
+    "CTRL_ENDPOINT_CENTRAL_VISIBILITY_MISSING": {
+        "id": "CTRL_ENDPOINT_CENTRAL_VISIBILITY_MISSING",
+        "severity": "medium",
+        "title": "Centralize endpoint visibility",
+        "why": "Central visibility helps IT confirm protection status, spot missing devices, and respond to alerts quickly.",
+        "steps": [
+            "Use a central console for endpoint protection health and alerts.",
+            "Review devices that have not checked in recently.",
+            "Assign ownership for weekly endpoint security review.",
+        ],
+    },
+    "CTRL_ENDPOINT_PATCH_MANAGEMENT_MISSING": {
+        "id": "CTRL_ENDPOINT_PATCH_MANAGEMENT_MISSING",
+        "severity": "high",
+        "title": "Establish OS patch management",
+        "why": "Unpatched operating systems are a common entry point for compromise and business disruption.",
+        "steps": [
+            "Define a regular operating system update process.",
+            "Use automated patch deployment where possible.",
+            "Track update compliance and follow up on devices that fall behind.",
+        ],
+    },
+    "CTRL_ENDPOINT_THIRD_PARTY_PATCHING_MISSING": {
+        "id": "CTRL_ENDPOINT_THIRD_PARTY_PATCHING_MISSING",
+        "severity": "medium",
+        "title": "Patch third-party applications",
+        "why": "Browsers, PDF readers, and collaboration tools are frequently targeted when updates are missed.",
+        "steps": [
+            "Inventory common third-party applications.",
+            "Enable automatic updates or use a patching tool.",
+            "Remove unsupported or unnecessary software.",
+        ],
+    },
+    "CTRL_ENDPOINT_PATCH_CADENCE_WEAK": {
+        "id": "CTRL_ENDPOINT_PATCH_CADENCE_WEAK",
+        "severity": "medium",
+        "title": "Improve patch cadence",
+        "why": "Long patch delays leave known vulnerabilities available to attackers for longer than necessary.",
+        "steps": [
+            "Set target timelines for important and critical patches.",
+            "Prioritize executive, finance, administrator, and remote-user endpoints.",
+            "Review patch status at least monthly.",
         ],
     },
     "CTRL_ENDPOINT_DISK_ENCRYPTION_MISSING": {
         "id": "CTRL_ENDPOINT_DISK_ENCRYPTION_MISSING",
-        "severity": "medium",
+        "severity": "high",
         "title": "Enable full-disk encryption",
-        "why": "Encryption reduces the chance of business data exposure if a laptop or portable device is lost or stolen.",
+        "why": "Encryption reduces the chance of business data exposure if a laptop or endpoint is lost or stolen.",
         "steps": [
-            "Enable BitLocker, FileVault, or equivalent encryption on portable endpoints.",
+            "Enable BitLocker, FileVault, or equivalent encryption on endpoints.",
+            "Prioritize laptops and portable devices first.",
+            "Monitor encryption status through device management where possible.",
+        ],
+    },
+    "CTRL_ENDPOINT_RECOVERY_KEYS_UNMANAGED": {
+        "id": "CTRL_ENDPOINT_RECOVERY_KEYS_UNMANAGED",
+        "severity": "medium",
+        "title": "Control encryption recovery keys",
+        "why": "Recovery keys are needed for support and recovery, but unmanaged keys can create avoidable data exposure.",
+        "steps": [
             "Store recovery keys in a controlled administrative location.",
-            "Review encryption status regularly for new and existing devices.",
+            "Restrict who can view or export recovery keys.",
+            "Review devices that do not have escrowed recovery keys.",
         ],
     },
-    "CTRL_ENDPOINT_HOST_FIREWALL_DISABLED": {
-        "id": "CTRL_ENDPOINT_HOST_FIREWALL_DISABLED",
-        "severity": "medium",
-        "title": "Enable endpoint firewalls",
-        "why": "Host firewalls reduce unnecessary inbound exposure and help limit movement between devices.",
-        "steps": [
-            "Enable the operating system firewall on business endpoints.",
-            "Apply a standard firewall profile through device management where possible.",
-            "Document any required exceptions for approved business applications.",
-        ],
-    },
-    "CTRL_ENDPOINT_OS_PATCHING_WEAK": {
-        "id": "CTRL_ENDPOINT_OS_PATCHING_WEAK",
-        "severity": "high",
-        "title": "Control operating system updates",
-        "why": "Unpatched endpoints are easier to compromise through known vulnerabilities.",
-        "steps": [
-            "Use a managed update process for Windows, macOS, and other endpoint operating systems.",
-            "Set a regular patching cadence with faster handling for critical security updates.",
-            "Monitor update compliance and follow up on devices that fall behind.",
-        ],
-    },
-    "CTRL_ENDPOINT_THIRD_PARTY_PATCHING_WEAK": {
-        "id": "CTRL_ENDPOINT_THIRD_PARTY_PATCHING_WEAK",
-        "severity": "medium",
-        "title": "Patch common third-party applications",
-        "why": "Browsers, PDF tools, and collaboration apps are common attack paths when updates are missed.",
-        "steps": [
-            "Inventory common third-party applications used across endpoints.",
-            "Use automated update tools where practical.",
-            "Remove unsupported or unnecessary applications.",
-        ],
-    },
-    "CTRL_ENDPOINT_UNSUPPORTED_OS": {
-        "id": "CTRL_ENDPOINT_UNSUPPORTED_OS",
-        "severity": "high",
-        "title": "Retire unsupported operating systems",
-        "why": "Unsupported operating systems no longer receive normal security updates and can expose the business to avoidable compromise.",
-        "steps": [
-            "Identify endpoints running unsupported operating systems.",
-            "Upgrade, replace, or isolate unsupported devices.",
-            "Create an exception register for any device that cannot be upgraded immediately.",
-        ],
-    },
-    "CTRL_ENDPOINT_LOCAL_ADMIN_EXCESSIVE": {
-        "id": "CTRL_ENDPOINT_LOCAL_ADMIN_EXCESSIVE",
+    "CTRL_ENDPOINT_LOCAL_ADMIN_BROAD": {
+        "id": "CTRL_ENDPOINT_LOCAL_ADMIN_BROAD",
         "severity": "high",
         "title": "Reduce local administrator rights",
-        "why": "Local administrator access makes malware and account compromise more damaging on endpoints.",
+        "why": "Broad local administrator rights make malware, ransomware, and account compromise more damaging.",
         "steps": [
             "Remove routine local administrator rights from standard users.",
-            "Use separate privileged accounts or just-in-time elevation for support tasks.",
-            "Review exceptions and remove access that is no longer needed.",
+            "Use separate privileged accounts or approved elevation workflows.",
+            "Document and review exceptions regularly.",
         ],
     },
-    "CTRL_ENDPOINT_SCREEN_LOCK_WEAK": {
-        "id": "CTRL_ENDPOINT_SCREEN_LOCK_WEAK",
+    "CTRL_ENDPOINT_ADMIN_RIGHTS_CONTROL_WEAK": {
+        "id": "CTRL_ENDPOINT_ADMIN_RIGHTS_CONTROL_WEAK",
         "severity": "medium",
-        "title": "Enforce screen lock requirements",
-        "why": "Screen lock policies reduce exposure when devices are unattended or used in shared spaces.",
+        "title": "Control and approve admin rights",
+        "why": "A formal approval process helps prevent privilege creep and reduces the impact of compromised accounts.",
         "steps": [
-            "Require passwords, PINs, or biometrics on business endpoints.",
-            "Set automatic lock after a short idle period.",
-            "Apply the policy through endpoint management where possible.",
+            "Define who may approve local administrator access.",
+            "Make access temporary where possible.",
+            "Review existing administrator memberships and remove stale entries.",
         ],
     },
-    "CTRL_ENDPOINT_REMOTE_ACCESS_MFA_MISSING": {
-        "id": "CTRL_ENDPOINT_REMOTE_ACCESS_MFA_MISSING",
+    "CTRL_ENDPOINT_USER_INSTALLS_UNRESTRICTED": {
+        "id": "CTRL_ENDPOINT_USER_INSTALLS_UNRESTRICTED",
+        "severity": "medium",
+        "title": "Restrict unapproved software installs",
+        "why": "Uncontrolled software installation increases exposure to malware, unsupported tools, and licensing issues.",
+        "steps": [
+            "Require approval for new software installation.",
+            "Remove local admin rights where they enable unapproved installs.",
+            "Publish a list of approved business applications.",
+        ],
+    },
+    "CTRL_ENDPOINT_APPLICATION_RESTRICTIONS_MISSING": {
+        "id": "CTRL_ENDPOINT_APPLICATION_RESTRICTIONS_MISSING",
+        "severity": "medium",
+        "title": "Use application restrictions",
+        "why": "Application restrictions reduce the chance that unauthorized or risky software can run on business endpoints.",
+        "steps": [
+            "Start with blocking known unwanted applications and script abuse paths.",
+            "Use allow lists for sensitive or high-risk user groups where practical.",
+            "Test policy impact before broad enforcement.",
+        ],
+    },
+    "CTRL_ENDPOINT_USB_CONTROL_MISSING": {
+        "id": "CTRL_ENDPOINT_USB_CONTROL_MISSING",
+        "severity": "medium",
+        "title": "Control USB and removable media use",
+        "why": "USB and removable media can introduce malware or lead to unmanaged data movement.",
+        "steps": [
+            "Define whether removable media is allowed for business use.",
+            "Restrict removable media for users who do not need it.",
+            "Monitor or approve exceptions for legitimate workflows.",
+        ],
+    },
+    "CTRL_ENDPOINT_REMOVABLE_MEDIA_ENCRYPTION_MISSING": {
+        "id": "CTRL_ENDPOINT_REMOVABLE_MEDIA_ENCRYPTION_MISSING",
+        "severity": "medium",
+        "title": "Require encryption for removable media",
+        "why": "Encrypted removable media reduces data exposure if a USB drive or external disk is lost.",
+        "steps": [
+            "Require encryption for approved removable storage.",
+            "Document acceptable removable media use cases.",
+            "Train users not to move sensitive data to unmanaged devices.",
+        ],
+    },
+    "CTRL_ENDPOINT_BACKUP_MISSING": {
+        "id": "CTRL_ENDPOINT_BACKUP_MISSING",
         "severity": "high",
-        "title": "Require MFA for remote endpoint access",
-        "why": "MFA lowers the chance that stolen passwords can be used to access endpoints or management tools remotely.",
+        "title": "Protect endpoint data with backup",
+        "why": "Endpoint backup helps recover from device failure, theft, accidental deletion, and ransomware.",
         "steps": [
-            "Require MFA for remote access tools, VPN, and endpoint management portals.",
-            "Remove direct remote desktop exposure where possible.",
-            "Review remote access users and disable stale accounts.",
-        ],
-    },
-    "CTRL_ENDPOINT_ALERT_REVIEW_MISSING": {
-        "id": "CTRL_ENDPOINT_ALERT_REVIEW_MISSING",
-        "severity": "high",
-        "title": "Review endpoint security alerts",
-        "why": "Endpoint alerts only reduce risk when someone reviews and acts on important events.",
-        "steps": [
-            "Assign ownership for endpoint security alert review.",
-            "Define a simple response process for high-priority alerts.",
-            "Tune alert notifications so important events are visible without overwhelming the team.",
-        ],
-    },
-    "CTRL_ENDPOINT_INVENTORY_INCOMPLETE": {
-        "id": "CTRL_ENDPOINT_INVENTORY_INCOMPLETE",
-        "severity": "medium",
-        "title": "Maintain an endpoint inventory",
-        "why": "A current inventory helps the business know what must be protected, patched, and recovered.",
-        "steps": [
-            "Build an inventory of laptops, desktops, and shared workstations.",
-            "Track owner, operating system, protection status, and last check-in.",
-            "Review the inventory during onboarding, offboarding, and device replacement.",
-        ],
-    },
-    "CTRL_ENDPOINT_BACKUP_INCOMPLETE": {
-        "id": "CTRL_ENDPOINT_BACKUP_INCOMPLETE",
-        "severity": "medium",
-        "title": "Protect important endpoint data",
-        "why": "Endpoint backup or cloud redirection reduces downtime and data loss after device failure, theft, or ransomware.",
-        "steps": [
-            "Redirect important user folders to protected cloud storage or deploy endpoint backup.",
-            "Confirm backup coverage for users who store important data locally.",
-            "Set retention that matches business recovery needs.",
+            "Redirect important folders to protected cloud storage or deploy endpoint backup.",
+            "Confirm critical users are covered.",
+            "Define retention that matches business recovery needs.",
         ],
     },
     "CTRL_ENDPOINT_RESTORE_NOT_TESTED": {
         "id": "CTRL_ENDPOINT_RESTORE_NOT_TESTED",
         "severity": "low",
-        "title": "Test endpoint recovery",
-        "why": "Recovery tests confirm that files and devices can be restored when the business needs them.",
+        "title": "Test endpoint restore",
+        "why": "Restore testing confirms that backup or cloud recovery will work when the business needs it.",
         "steps": [
-            "Test file restore for a sample endpoint or user.",
-            "Document recovery steps for common device loss or replacement scenarios.",
-            "Repeat testing periodically or after backup process changes.",
+            "Test restoring files for a sample endpoint or user.",
+            "Document common restore steps.",
+            "Repeat testing after backup or storage changes.",
         ],
     },
 }
@@ -165,6 +198,7 @@ def _control_severity(control: Any) -> str:
 
 
 def generate_fix_blocks(failed_controls: List[Any], gates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    # The app passes gates for every baseline; endpoint fixes are control-driven today.
     fixes = []
     seen = set()
 

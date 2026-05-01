@@ -106,6 +106,13 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
     failed_controls: List[FailedControl] = []
     all_gates: List[GateResult] = []
 
+    user_count = answers.get("A1_USER_COUNT")
+
+    if user_count in ("U_301_1000", "U_1000_PLUS"):
+        notes.append(
+            "Larger Microsoft 365 environments benefit from more formal change control, role review, and monitoring ownership."
+        )
+
     if answers.get("F1_SENSITIVE_DATA") == "YES":
         notes.append(
             "This environment handles sensitive data. Security gaps may have regulatory impact."
