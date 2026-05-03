@@ -179,6 +179,7 @@
           "score_category": "privileged_access",
           "options": [
             { "key": "NO", "label": "No" },
+            { "key": "NA", "label": "Not applicable / no service accounts" },
             { "key": "YES", "label": "Yes" },
             { "key": "NOT_SURE", "label": "Not sure" }
           ]

@@ -286,7 +286,7 @@ def _control_severity(control: Any) -> str:
 
 
 def generate_fix_blocks(failed_controls: List[Any], gates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    # The app passes gates for every baseline; AD fixes are control-driven today.
+    # The app passes gates for every baseline; AD fixes are generated from failed controls.
     fixes = []
     seen = set()
 

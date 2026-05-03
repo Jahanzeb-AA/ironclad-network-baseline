@@ -216,7 +216,7 @@ def score_assessment(answers: Dict[str, str]) -> ScoreBreakdown:
             "medium",
         )
 
-    if _service_accounts_in_scope(service_accounts):
+    if _service_accounts_in_scope(service_accounts) and c4_service_account_da != "NA":
         if c4_service_account_da == "YES" or _is_not_sure(c4_service_account_da):
             privileged_access += 15
             _add_failed(
